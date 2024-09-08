@@ -42,6 +42,8 @@ int main ()
                     for (int n = 0; n < 8; n++)
                     {
                         char * addres = & (char) swiper;
+                        //ebal rot gita
+                        
                     }
                 }
             }
