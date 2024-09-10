@@ -1,18 +1,9 @@
-//#include "../inc/main.h"
-#include <stdio.h>
-#include <assert.h>
-#include <string.h>
-
-const int STR_LEN = 48;
-const int ARRAY_LEN = 15;
-
-int MyStrcmp (const char * str_one, const char * str_two);
-int MyStrcmpFromBack (const char * str_one, const char * str_two);
+#include "../inc/main.h"
 
 int main ()
 {
-    char text[ARRAY_LEN][STR_LEN] = {"winter! The peasant, celebrating,",
-                                     "zinter! The peasant, celebrating,",
+    char text[ARRAY_LEN][STR_LEN] = {"winter! The peasant, celebrating,//\t...",
+                                     "ainter! The peasant, celebraping,-=-=-=-``",
                                      "in a flat sledge inaugurates the track;",
                                      "his naggy, having sensed the snow,",
                                      "shambles at something like a trot.",
@@ -27,33 +18,9 @@ int main ()
                                      "He finds it both painful and funny — while",
                                      "his mother, from the window, threatens him..."};
 
-    
-
-    double swiper = 0;
-
-    for (int i = 0; i < ARRAY_LEN; i++)
-    {
-        for (int j = 0; j < ARRAY_LEN - 1; j++)
-        {
-            if (MyStrcmp (text[j], text[j + 1]) < 0)
-            {
-                for (int k = 0; k < 6; k++)
-                {
-                    for (int n = 0; n < 8; n++)
-                    {
-                        char * addres = & (char) swiper;
-                        //ebal rot gita
-                        
-                    }
-                }
-            }
-        }
-    }
-    
    printf ("%d\n", MyStrcmp (text[0], text[1]));
    printf ("%d\n", MyStrcmpFromBack (text[0], text[1]));
-
-
+   return 0;
 }
 
 /**
@@ -68,20 +35,22 @@ int MyStrcmp (const char * str_one, const char * str_two)
 
     printf ("%s\n%s\n", str_one, str_two);
 
-    int char_counter = 0;
+    int char_counter_one = HowManyNotLetters (str_one, STRAIGHT);
+    int char_counter_two = HowManyNotLetters (str_two, STRAIGHT);
 
-    while (str_one[char_counter] != '\0')
+    while (str_one[char_counter_one] != '\0')
     {
-        if (str_one[char_counter] == str_two[char_counter])
+        if (str_one[char_counter_one] == str_two[char_counter_two])
         {
-            char_counter++;
-            continue;
+            char_counter_one++;
+            char_counter_two++;
+            printf ("Im stupid \n");
         }
         else
-            return (str_one[char_counter] - str_two[char_counter]);
+            return (str_one[char_counter_one] - str_two[char_counter_two]);
     }
 
-    return (str_one[char_counter] - str_two[char_counter]);
+    return (str_one[char_counter_one] - str_two[char_counter_two]);
 }
 
 int MyStrcmpFromBack (const char * str_one, const char * str_two)
@@ -89,41 +58,67 @@ int MyStrcmpFromBack (const char * str_one, const char * str_two)
     assert (str_one != NULL);
     assert (str_two != NULL);
 
-    int len_str_one = strlen (str_one);
-    int len_str_two = strlen (str_two);
+    int not_letters_in_one = HowManyNotLetters (str_one, REVERS);
+    int not_letters_in_two = HowManyNotLetters (str_two, REVERS);
+
+    printf ("%d %d\n", not_letters_in_one, not_letters_in_two);
+
+    int len_str_one = strlen (str_one) - not_letters_in_one - 1;
+    int len_str_two = strlen (str_two) - not_letters_in_two - 1;
 
     printf ("%s\n%s\n", str_one, str_two);
-    int char_counter = 0;
     
     if (len_str_one < len_str_two)
     {
-        char_counter = len_str_one - 1;
-        for (;char_counter >= 0; char_counter--)
+        for (;len_str_one >= 0;)
         {
-            if (str_one[char_counter] == str_two[char_counter])
-            {
-                char_counter--;
+            if (str_one[len_str_one] == str_two[len_str_two])
                 continue;
-            }
             else
-                return (str_one[char_counter] - str_two[char_counter]);
+                return (str_one[len_str_one] - str_two[len_str_two]);
+             len_str_one--; 
+             len_str_two--;
         }
     }
     else
     {
-        char_counter = len_str_two - 1;
-        for (;char_counter >= 0; char_counter--)
+        for (;len_str_two >= 0;)
         {
-            if (str_one[char_counter] == str_two[char_counter])
+            if (str_one[len_str_one] == str_two[len_str_two])
             {
-                continue;
+                len_str_two--;
+                len_str_one--;
             }
             else
-                return (str_one[char_counter] - str_two[char_counter]);
+                return (str_one[len_str_one] - str_two[len_str_two]);
         }
     }
 
     return 0;
+}   
+
+int HowManyNotLetters (const char * str, int arg)
+{
+    int not_letters = 0;
+
+    if (arg == STRAIGHT)
+        while (int charc = tolower (str[not_letters]) < 97 && charc > 122)
+        {
+            not_letters++;
+            printf ("Im stupid\n");
+
+        }
+    else
+    {   
+        int str_len = strlen (str) - 1;
+
+        while (int charc = tolower (str[str_len]) < 97 || charc > 122)
+            {
+                not_letters++;
+                str_len--;
+                printf ("Im stupid \n");
+            }
+    }
+    return not_letters;
 }
 
-void FileReader ();
