@@ -25,32 +25,23 @@ char * FileReader (char * file_directory)
     return str_with_text;
 }
 
-int StrCounter (char * str_with_text)
-{
-    int counter = 0;
-    int iteration = 0;
-
-    while (str_with_text[iteration] != '\0')
-    {
-        if (str_with_text[iteration] == '\n')
-            counter++;
-        iteration++;
-    }
-
-    return counter;
-}
-
-/*int MakeAnArray (char * str_with_text)
+int MakeAnArray (char * str_with_text)
 {
     int str_quantity = StrCounter (str_with_text);
 
     char ** text = (char **) calloc (str_quantity, sizeof (char*));
     assert (text != NULL);
 
-    const char separators[] = "\n";
-    
+    const char separators[] = "\n\0";
 
-    while (true) break;
+    int index = 0;
+
+    text[index] = strtok (str_with_text, separators);
+
+    while (text[index])
+    {
+
+    }
 
 }
 
@@ -60,5 +51,6 @@ char * PoemMaker (char * str_with_text)
     {
         int counter = 0;
         while (str_with_text[counter] != '\n')
+
     }
-}*/ 
+}

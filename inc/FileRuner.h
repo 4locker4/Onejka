@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "Utils.h"
+
 char * FileReader (char * file_directory);
 char * PoemMaker  (char * str_with_text);
-int    StrCounter (char * str_with_text); 
