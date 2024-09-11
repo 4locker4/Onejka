@@ -4,4 +4,4 @@
 #include <string.h>
 #include <ctype.h>
 
-int    StrCounter (char * str_with_text); 
+int StrCounter (char * str_with_text); 

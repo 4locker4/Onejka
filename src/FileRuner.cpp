@@ -10,9 +10,9 @@ char * FileReader (char * file_directory)
     int file_offset = fseek (file_with_onejka, 0, SEEK_END);
     assert (file_offset != 0);
 
-    rewind (file_with_onejka);
-
     int file_size = ftell (file_with_onejka);
+
+    rewind (file_with_onejka);
 
     char * str_with_text = (char *) calloc (file_size + 1, sizeof (char));
     assert (str_with_text != NULL);
@@ -25,7 +25,7 @@ char * FileReader (char * file_directory)
     return str_with_text;
 }
 
-int MakeAnArray (char * str_with_text)
+void MakeAnArray (char * str_with_text)
 {
     int str_quantity = StrCounter (str_with_text);
 
@@ -34,23 +34,8 @@ int MakeAnArray (char * str_with_text)
 
     const char separators[] = "\n\0";
 
-    int index = 0;
-
-    text[index] = strtok (str_with_text, separators);
-
-    while (text[index])
+    for (int index = 0; index < str_quantity; index++)
     {
-
-    }
-
-}
-
-char * PoemMaker (char * str_with_text)
-{
-    for (int index = 0; index < strlen (str_with_text); index++)
-    {
-        int counter = 0;
-        while (str_with_text[counter] != '\n')
-
+        text[index] = strtok (str_with_text, separators);
     }
 }
