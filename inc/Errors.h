@@ -3,7 +3,7 @@
 
 #define my_assert(expr) if (expr)\
                         {\
-                            printf ("ERROR: \"" #expr "\"File %s, function %s, line %d\n", \
-                                      __FILE__, __func__, __LINE__); \ 
-                            exit (1); \
+                            COLOR_PRINT(RED, "ERROR: \"" #expr "\", file %s, function %s, line %d\n", \
+                                        __FILE__, __func__, __LINE__);\
+                            exit (1);\
                         }

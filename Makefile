@@ -9,9 +9,9 @@ flags = -c -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-e
 		-Wsign-promo -Wstack-usage=8192 -Wstrict-aliasing -Wstrict-null-sentinel -Wtype-limits 	\
 		-Wwrite-strings -Werror=vla -D_DEBUG -D_EJUDGE_CLIENT_SIDE
 
-includes = ./inc/main.h ./inc/FileRuner.h
+includes = ./inc/main.h ./inc/FileRuner.h ./inc/Compare.h ./inc/Errors.h ./inc/Utils.h
 
-sources = ./src/main.cpp ./src/FileRuner.cpp
+sources = ./src/main.cpp ./src/FileRuner.cpp ./src/Compare.cpp ./src/Utils.cpp
 
 objects = $(sources:.cpp=.o)
 

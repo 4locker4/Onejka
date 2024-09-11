@@ -4,4 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 
-int StrCounter (char * str_with_text); 
+#include "Errors.h"
+
+int StrCounter (char * str_with_text);
