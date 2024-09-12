@@ -1,0 +1,16 @@
+# Git ignore
+
+# Ignore logs
+
+*logs
+
+# Ignore .o
+
+*.o
+
+# Ignore exe
+
+*.exe
+
+./docs/
+./vscode/

@@ -1,7 +1,11 @@
+///@file main.h
+
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <stdio.h>
 
 #include "Compare.h"
-#include "FileRuner.h"
+#include "FileRunner.h"
 
-const int STR_LEN = 48;
-const int ARRAY_LEN = 15;
+#endif ///MAIN_H
