@@ -90,9 +90,12 @@ char ** FileOpener (const char * file_directory)
 
     str_with_text[file_size] = '\0';
 
-    printf ("End of FileOpener\n");
+    int len = StrCounter (str_with_text);
 
-    return MakeAnArray (str_with_text);
+    char ** text = MakeAnArray (str_with_text);
+    BubbleSort (text, len);
+
+    return text;
 }
 
 /**
@@ -102,14 +105,12 @@ char ** FileOpener (const char * file_directory)
 
 char ** MakeAnArray (char * str_with_text)
 {
-    printf ("Start the MakeAnArray\n");
 
     int str_quantity = StrCounter (str_with_text);
 
     char ** text = (char **) calloc (str_quantity, sizeof (char *));
     my_assert (text != NULL);
 
-    printf ("Start makeing array\n");
 
     LineSplitting (str_with_text, text);
 
@@ -122,41 +123,49 @@ char ** MakeAnArray (char * str_with_text)
  * \param [in] str_with_test String which include text
  */
 
-char ** LineSplitting (char * str_with_text, char ** text)
+void LineSplitting (char * str_with_text, char ** text)
 {
     int i = 0;
     int text_index = 0;
 
     while (str_with_text[i] != '\0')
     {
-        if (str_with_text[i] != '\n' && str_with_text[i] != '\r');
+        if (str_with_text[i] != '\n' && str_with_text[i] != '\r')
+            i++;
         else
         {
             str_with_text[i] = '\0';
+            i++;
 
-            printf ("NULL %c", str_with_text[i]);
-            
-            if (str_with_text[i + 1] == '\n' || str_with_text[i + 1] == '\r')
+            if (str_with_text[i] != '\0')
             {
-                str_with_text[i + 1] = '\0';
-                
-                printf ("NULL 2 %c", str_with_text[i + 1]);
-
-                text[text_index] = (char *) (i + 2);
-                printf ("%s\n", text[text_index]);
+                text[text_index] = &str_with_text[i];
                 text_index++;
             }
-            text[text_index] = (char *) (i + 1);
-            printf ("%s\n", text[text_index]);
-            text_index++;
         }
-        i++;
     }
-    return '\0';
 }
 
 void HelpList ()
 {
     printf ("If You need to open Your own file, write like this:\n\n");
     printf ("[Name of .exe file] --put [Your file with text name]\n");
+}
+
+void FileWithResult (char ** text)
+{
+    int i = 0;
+
+    FILE * result = fopen ("../Onejka/Result.txt", "w");
+    my_assert (fopen != NULL);
+
+    while (text[i] != '\0')
+    {
+        int len = strlen (text[i]);
+        text[i][len - 1] = '\n';
+
+        fwrite (text[i], len, 1, result);
+        i++;
+    }
+    fclose (result);
 }

@@ -70,15 +70,11 @@ bool SkipSpaces ()
 
 int StrCounter (char * fileFirstElement)                                             // Count quantity of tests
 {
-    printf ("Start StrCounter\n");
-
     int counterNextStr = 0;
     int i = 0;
 
     while (fileFirstElement[i] != '\0')
     {
-        COLOR_PRINT (RED, "BLYA\n");
-
         if (fileFirstElement[i] == '\n')
         {
             ++counterNextStr;

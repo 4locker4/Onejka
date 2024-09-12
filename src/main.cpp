@@ -4,6 +4,8 @@
 
 int main (int argc, char * argv[])
 {
-    FileRunner (argc, argv);
+    char ** text = FileRunner (argc, argv);                        ///< Return text
+    FileWithResult (text);
+    
     return 0;
 }

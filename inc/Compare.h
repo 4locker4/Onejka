@@ -15,6 +15,6 @@ const int STRAIGHT =  1;                                                    ///<
 int  MyStrcmp          (const char * str_one, const char * str_two);        ///< Compare two strings
 int  MyStrcmpFromBack  (const char * str_one, const char * str_two);        ///< Compare two stringsfrom behind
 int  HowManyNotLetters (const char * str, int arg);                         ///< Find not-letter symbols
-void BubbleSort        (char ** text, int quantity);                        ///< Runs bubble sort 
+void BubbleSort        (char ** text, int text_size);                       ///< Runs bubble sort 
 
 #endif ///COMPARE_H
