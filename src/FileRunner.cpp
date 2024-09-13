@@ -4,10 +4,14 @@
 
 char ** FileRunner (int argc, char * argv[])
 {
-    if (argc > 3);
+    if (argc > 3)
+        printf ("You entered too many flags\n");
 
     else if (argc == 1)
-        return (FileOpener ("../Onejka/OnejkaText.txt"));
+    {
+        printf ("FileRunner: start opening FileOpener");
+        return (FileOpener ("C:/Users/eremc/Desktop/Onegin.txt"));
+    }
     else
     {
         switch (GetFlags (argc, argv[1]))
@@ -23,13 +27,13 @@ char ** FileRunner (int argc, char * argv[])
             }
             case ERROR:
             {
-                printf ("Please, enter only one flag.\n");
+                printf ("Sommething went wrong.\n");
                 break;
             }
 
             default:
             {
-                printf ("You entered something wrong. Be careful.");
+                printf ("You entered something wrong. Be careful.\n");
                 break;
             }
         }
@@ -75,25 +79,44 @@ char ** FileOpener (const char * file_directory)
     
     struct stat to_take_file_size = {};
 
+    COLOR_PRINT (RED, "FileOpener: struct created\n");
+
     stat (file_directory, &to_take_file_size);
 
     int file_size = to_take_file_size.st_size;
 
+    COLOR_PRINT (RED, "FileOpener: fileSize taken\n");
+
     FILE* file_with_onejka = fopen (file_directory, "r");
     my_assert (file_with_onejka != 0);
+
+    COLOR_PRINT (RED, "FileOpener: Text file opened \n");
 
     char * str_with_text = (char *) calloc (file_size + 1, sizeof (char));
     my_assert (str_with_text != NULL);
 
+    COLOR_PRINT (RED, "FileOpener: str_with_text created\n");
+
     size_t check_size = fread (str_with_text, sizeof (char), file_size, file_with_onejka);
     my_assert ((int) check_size != file_size + 1);
+
+    COLOR_PRINT (RED, "FileOpener: str_with_text full\n");
 
     str_with_text[file_size] = '\0';
 
     int len = StrCounter (str_with_text);
 
+    COLOR_PRINT (RED, "FileOpener: Start MakeAnArray\n");
+
     char ** text = MakeAnArray (str_with_text);
+
+    COLOR_PRINT (RED, "FileOpener: Bubble sort starting\n");
+
     BubbleSort (text, len);
+
+    printf ("<%s>\n<%s >\n", text[0], text[1]);
+
+    COLOR_PRINT (STRANGE, "FileOpener: Bubble ends\n");
 
     return text;
 }
@@ -105,14 +128,22 @@ char ** FileOpener (const char * file_directory)
 
 char ** MakeAnArray (char * str_with_text)
 {
-
     int str_quantity = StrCounter (str_with_text);
 
-    char ** text = (char **) calloc (str_quantity, sizeof (char *));
+    COLOR_PRINT (GREEN, "MakeAnArray: str_quantity taken\n");
+
+    char ** text = (char **) calloc (str_quantity + 1, sizeof (char *));
     my_assert (text != NULL);
 
+    COLOR_PRINT (GREEN, "MakeAnArray: we have text!\n");
+
+    text[str_quantity] = '\0';
+
+    COLOR_PRINT (GREEN, "MakeAnArray: Start LineSplitting\n");
 
     LineSplitting (str_with_text, text);
+
+    COLOR_PRINT (YELLOW, "MakeAnArray: LineSplitting ends\n");
 
     return text;
 }
@@ -128,6 +159,15 @@ void LineSplitting (char * str_with_text, char ** text)
     int i = 0;
     int text_index = 0;
 
+    if (str_with_text[0] != '\n' && str_with_text[0] != '\r')
+    {
+        text[text_index] = str_with_text;
+
+        //COLOR_PRINT (YELLOW, "LineSplitting:\n%s\n", text[text_index]);
+
+        text_index++;
+    }
+
     while (str_with_text[i] != '\0')
     {
         if (str_with_text[i] != '\n' && str_with_text[i] != '\r')
@@ -137,10 +177,15 @@ void LineSplitting (char * str_with_text, char ** text)
             str_with_text[i] = '\0';
             i++;
 
-            if (str_with_text[i] != '\0')
+            if (str_with_text[i] != '\n' && str_with_text[i] != '\r')
             {
+                
                 text[text_index] = &str_with_text[i];
+
+                //COLOR_PRINT (YELLOW, "LineSplitting:\n%30s\n", text[text_index]);
+
                 text_index++;
+                i++;
             }
         }
     }
@@ -157,15 +202,17 @@ void FileWithResult (char ** text)
     int i = 0;
 
     FILE * result = fopen ("../Onejka/Result.txt", "w");
+
     my_assert (fopen != NULL);
+
+    char next_str = '\n';
 
     while (text[i] != '\0')
     {
-        int len = strlen (text[i]);
-        text[i][len - 1] = '\n';
-
-        fwrite (text[i], len, 1, result);
+        fwrite (text[i], strlen (text[i]), 1, result);
+        fwrite (&next_str, 1, 1, result);
         i++;
     }
+    
     fclose (result);
 }

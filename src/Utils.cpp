@@ -77,10 +77,17 @@ int StrCounter (char * fileFirstElement)                                        
     {
         if (fileFirstElement[i] == '\n')
         {
-            ++counterNextStr;
+            counterNextStr++;
+            i++;
+            while (fileFirstElement[i] == '\n')
+            {
+                i++;
+                continue;
+            }
         }
-        i++;
+        else
+            i++;
     }
-
-    return counterNextStr + 1;
+    COLOR_PRINT (STRANGE, "%d", counterNextStr);
+    return counterNextStr;
 }

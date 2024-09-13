@@ -13,6 +13,7 @@
 #define RED     "\x1b[31m"
 #define GREEN   "\x1b[32m"
 #define YELLOW  "\x1b[33m"
+#define STRANGE "\x1b[1;35;7m"
 
 #define COLOR_PRINT(color, ...)  { printf (color __VA_ARGS__); printf (RESET); }    ///< Colorful print
 
