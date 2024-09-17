@@ -88,6 +88,5 @@ int StrCounter (char * fileFirstElement)                                        
         else
             i++;
     }
-    COLOR_PRINT (STRANGE, "%d", counterNextStr);
     return counterNextStr;
 }

@@ -1,17 +1,14 @@
 ///@file main.cpp
 
-#include "../inc/main.h"
+#include "../inc/FileRunner.h"
 
 int main (int argc, char * argv[])
 {
-    printf ("main: Start Working\n");
+    struct General data = {};
 
-    char ** text = FileRunner (argc, argv);                        ///< Return text
+    Menu (argc, argv, &data);
 
-    printf ("main: FileRunner ends succses\n");
+    FileWithResult (&data);
 
-    FileWithResult (text);
-
-    printf ("main: Thats all\n");
     return 0;
 }

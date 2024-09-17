@@ -9,7 +9,7 @@ flags = -c -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-e
 		-Wsign-promo -Wstack-usage=8192 -Wstrict-aliasing -Wstrict-null-sentinel -Wtype-limits 	\
 		-Wwrite-strings -Werror=vla -D_DEBUG -D_EJUDGE_CLIENT_SIDE
 
-includes = ./inc/main.h ./inc/FileRunner.h ./inc/Compare.h ./inc/Errors.h ./inc/Utils.h
+includes = ./inc/FileRunner.h ./inc/Compare.h ./inc/Errors.h ./inc/Utils.h
 
 sources = ./src/main.cpp ./src/FileRunner.cpp ./src/Compare.cpp ./src/Utils.cpp
 
@@ -17,7 +17,11 @@ objects = $(sources:.cpp=.o)
 
 execute = Onejka.exe
 
-all: $(sources) $(execute)
+all: $(sources) $(execute) run
+
+run:
+	@$(execute)
+	@echo -e -en '\E[;32m'"\n\t\t\t\033[1mRunning...\033[0m\n\n" 
 	
 $(execute): $(objects) 
 	$(compiler) $(objects) -o $@

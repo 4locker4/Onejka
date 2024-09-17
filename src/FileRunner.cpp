@@ -2,15 +2,14 @@
 
 #include "../inc/FileRunner.h"
 
-char ** FileRunner (int argc, char * argv[])
+void Menu (int argc, char * argv[], struct General * data)
 {
     if (argc > 3)
         printf ("You entered too many flags\n");
 
     else if (argc == 1)
     {
-        printf ("FileRunner: start opening FileOpener");
-        return (FileOpener ("C:/Users/eremc/Desktop/Onegin.txt"));
+        FileRunner (data, FILE_NAME);
     }
     else
     {
@@ -18,7 +17,7 @@ char ** FileRunner (int argc, char * argv[])
         {
             case PUT:
             {
-                return (FileOpener (argv[2]));
+                FileRunner (data, argv[2]);
             }
             case HELP:
             {
@@ -27,7 +26,7 @@ char ** FileRunner (int argc, char * argv[])
             }
             case ERROR:
             {
-                printf ("Sommething went wrong.\n");
+                printf ("Something went wrong.\n");
                 break;
             }
 
@@ -38,7 +37,6 @@ char ** FileRunner (int argc, char * argv[])
             }
         }
     }
-    return 0;
 }
 
 /**
@@ -69,56 +67,50 @@ int GetFlags (const int argc, const char* str)
 }
 
 /**
+ * @brief Read and sort file
+ * \param [in] data           Struct of all file data
+ * \param [in] file_directory File`s directory
+ */
+
+void FileRunner (struct General * data, const char * file_directory)
+{
+    FileOpener (file_directory, data);
+
+    MakeAnArray (data);
+
+    LineSplitting (data);
+
+    BubbleSort (data);
+
+}
+
+/**
  * @brief Open the file
  * \param [in] file_directory File name
  */
 
-char ** FileOpener (const char * file_directory)
+void FileOpener (const char * file_directory, struct General * data)
 {
     my_assert (file_directory != NULL);
-    
-    struct stat to_take_file_size = {};
 
-    COLOR_PRINT (RED, "FileOpener: struct created\n");
+    struct stat to_take_file_size = {};
 
     stat (file_directory, &to_take_file_size);
 
-    int file_size = to_take_file_size.st_size;
+    data->inputed.str_len = to_take_file_size.st_size;
 
-    COLOR_PRINT (RED, "FileOpener: fileSize taken\n");
-
-    FILE* file_with_onejka = fopen (file_directory, "r");
+    FILE* file_with_onejka = fopen (file_directory, "rb");
     my_assert (file_with_onejka != 0);
 
-    COLOR_PRINT (RED, "FileOpener: Text file opened \n");
+    data->inputed.text = (char *) calloc (data->inputed.str_len + 1, sizeof (char));
+    my_assert (data->inputed.str_len != 0);
 
-    char * str_with_text = (char *) calloc (file_size + 1, sizeof (char));
-    my_assert (str_with_text != NULL);
+    size_t check_size = (int) fread (data->inputed.text, sizeof (char), data->inputed.str_len, file_with_onejka);
+    my_assert (check_size == data->inputed.str_len);
 
-    COLOR_PRINT (RED, "FileOpener: str_with_text created\n");
+    data->inputed.text[data->inputed.str_len] = '\0';
 
-    size_t check_size = fread (str_with_text, sizeof (char), file_size, file_with_onejka);
-    my_assert ((int) check_size != file_size + 1);
-
-    COLOR_PRINT (RED, "FileOpener: str_with_text full\n");
-
-    str_with_text[file_size] = '\0';
-
-    int len = StrCounter (str_with_text);
-
-    COLOR_PRINT (RED, "FileOpener: Start MakeAnArray\n");
-
-    char ** text = MakeAnArray (str_with_text);
-
-    COLOR_PRINT (RED, "FileOpener: Bubble sort starting\n");
-
-    BubbleSort (text, len);
-
-    printf ("<%s>\n<%s >\n", text[0], text[1]);
-
-    COLOR_PRINT (STRANGE, "FileOpener: Bubble ends\n");
-
-    return text;
+    data->inputed.n_elements = StrCounter (data->inputed.text);
 }
 
 /**
@@ -126,26 +118,10 @@ char ** FileOpener (const char * file_directory)
  * \param [in] str_with_test String which include text
  */
 
-char ** MakeAnArray (char * str_with_text)
+void MakeAnArray (struct General * data)
 {
-    int str_quantity = StrCounter (str_with_text);
-
-    COLOR_PRINT (GREEN, "MakeAnArray: str_quantity taken\n");
-
-    char ** text = (char **) calloc (str_quantity + 1, sizeof (char *));
-    my_assert (text != NULL);
-
-    COLOR_PRINT (GREEN, "MakeAnArray: we have text!\n");
-
-    text[str_quantity] = '\0';
-
-    COLOR_PRINT (GREEN, "MakeAnArray: Start LineSplitting\n");
-
-    LineSplitting (str_with_text, text);
-
-    COLOR_PRINT (YELLOW, "MakeAnArray: LineSplitting ends\n");
-
-    return text;
+    data->stanzas = (Read_Text *) calloc (data->inputed.n_elements + 1, sizeof (char *));
+    my_assert (data->stanzas != NULL);
 }
 
 /**
@@ -154,35 +130,32 @@ char ** MakeAnArray (char * str_with_text)
  * \param [in] str_with_test String which include text
  */
 
-void LineSplitting (char * str_with_text, char ** text)
+void LineSplitting (struct General * data)
 {
     int i = 0;
     int text_index = 0;
 
-    if (str_with_text[0] != '\n' && str_with_text[0] != '\r')
+    if (data->inputed.text[0] != '\n' && data->inputed.text[0] != '\r')
     {
-        text[text_index] = str_with_text;
-
-        //COLOR_PRINT (YELLOW, "LineSplitting:\n%s\n", text[text_index]);
+        data->stanzas[text_index].strings = data->inputed.text;
 
         text_index++;
     }
 
-    while (str_with_text[i] != '\0')
+while (data->inputed.text != '\0')
     {
-        if (str_with_text[i] != '\n' && str_with_text[i] != '\r')
+        if (data->inputed.text[i] != '\r' && data->inputed.text[i] != '\n')
             i++;
         else
         {
-            str_with_text[i] = '\0';
+            data->inputed.text[i] = '\0';
+            data->stanzas[text_index].strings_len = strlen (data->stanzas[text_index].strings);
+
             i++;
 
-            if (str_with_text[i] != '\n' && str_with_text[i] != '\r')
+            if (data->inputed.text[i] != '\n' && data->inputed.text[i] != '\r')
             {
-                
-                text[text_index] = &str_with_text[i];
-
-                //COLOR_PRINT (YELLOW, "LineSplitting:\n%30s\n", text[text_index]);
+                data->stanzas[text_index].strings = &data->inputed.text[i];
 
                 text_index++;
                 i++;
@@ -191,28 +164,37 @@ void LineSplitting (char * str_with_text, char ** text)
     }
 }
 
+/**
+ * @brief Info for User
+ */
+
 void HelpList ()
 {
     printf ("If You need to open Your own file, write like this:\n\n");
     printf ("[Name of .exe file] --put [Your file with text name]\n");
 }
 
-void FileWithResult (char ** text)
+/**
+ * @param Write datas in result file
+ * \param [in] data Struct with all files data
+ */
+
+void FileWithResult (struct General * data)
 {
-    int i = 0;
-
     FILE * result = fopen ("../Onejka/Result.txt", "w");
-
     my_assert (fopen != NULL);
 
     char next_str = '\n';
 
-    while (text[i] != '\0')
+    for (size_t i = 0; i < data->inputed.str_len; i++)
     {
-        fwrite (text[i], strlen (text[i]), 1, result);
+        fwrite (data->stanzas[i].strings, data->stanzas[i].strings_len, data->stanzas->strings_len, result);
         fwrite (&next_str, 1, 1, result);
         i++;
     }
-    
-    fclose (result);
+    free (data->inputed.text);
+    free (data->stanzas);
+
+    int end = fclose (result);
+    my_assert (end == 0);
 }

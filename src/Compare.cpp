@@ -8,38 +8,38 @@
  * \param [in] str_two Second string
  */
 
-int MyStrcmp (const char * str_one, const char * str_two)
+int Comparator (struct Read_Text * data_first_str, struct Read_Text * data_second_str)
 {
-    my_assert (str_one != NULL);
-    my_assert (str_two != NULL);
+    my_assert (data_first_str != NULL);
+    my_assert (data_second_str != NULL);
 
     int char_counter_one = 0;
     int char_counter_two = 0;
 
-    while (str_one[char_counter_one] != '\0' && str_two[char_counter_two] != '\0')
+    while (data_first_str->strings[char_counter_one] != '\0' && data_second_str->strings[char_counter_two] != '\0')
     {
-        if (tolower (str_one[char_counter_one]) > AFTER_z || tolower (str_one[char_counter_one] < BEFOR_a))
+        if (tolower (data_first_str->strings[char_counter_one]) > AFTER_z || tolower (data_second_str->strings[char_counter_one] < BEFOR_a))
         {
             char_counter_one++;
             continue;
         }
 
-        if (tolower (str_two[char_counter_two]) > AFTER_z || tolower (str_two[char_counter_two] < BEFOR_a))
+        if (tolower (data_first_str->strings[char_counter_two]) > AFTER_z || tolower (data_second_str->strings[char_counter_two] < BEFOR_a))
         {
             char_counter_two++;
             continue;
         }
 
-        if (tolower (str_one[char_counter_one]) == tolower (str_two[char_counter_two]))
+        if (tolower (data_first_str->strings[char_counter_one]) == tolower (data_second_str->strings[char_counter_two]))
         {
             char_counter_one++;
             char_counter_two++;
         }
         else
-            return (tolower (str_one[char_counter_one]) - tolower (str_two[char_counter_two]));
+            return (tolower (data_first_str->strings[char_counter_one]) - tolower (data_second_str->strings[char_counter_two]));
     }
 
-    return (tolower (str_one[char_counter_one]) - tolower (str_two[char_counter_two]));
+    return (tolower (data_first_str->strings[char_counter_one]) - tolower (data_second_str->strings[char_counter_two]));
 }
 
 /**
@@ -48,37 +48,37 @@ int MyStrcmp (const char * str_one, const char * str_two)
  * \param [in] str_two Second string
  */
 
-int MyStrcmpFromBack (const char * str_one, const char * str_two)
+int BackComparator (Read_Text * data_str_one, Read_Text * data_str_two)
 {
-    my_assert (str_one != NULL);
-    my_assert (str_two != NULL);
+    my_assert (data_str_one != NULL);
+    my_assert (data_str_two != NULL);
 
-    int len_str_one = strlen (str_one);
-    int len_str_two = strlen (str_two);
+    int len_str_one = data_str_one->strings_len;
+    int len_str_two = data_str_two->strings_len;
     
     while (len_str_one >= 0 && len_str_two >= 0)
     {
-        if (tolower (str_one[len_str_one]) > AFTER_z || tolower (str_one[len_str_one] < BEFOR_a))
+        if (tolower (data_str_one->strings[len_str_one]) > AFTER_z || tolower (data_str_two->strings[len_str_one] < BEFOR_a))
         {
             len_str_one--;
             continue;
         }
 
-        if (tolower (str_two[len_str_two]) > AFTER_z || tolower (str_two[len_str_two] < BEFOR_a))
+        if (tolower (data_str_one->strings[len_str_two]) > AFTER_z || tolower (data_str_two->strings[len_str_two] < BEFOR_a))
         {
             len_str_two--;
             continue;
         }
 
-        if (tolower (str_one[len_str_one]) == tolower (str_two[len_str_two]))
+        if (tolower (data_str_one->strings[len_str_one]) == tolower (data_str_two->strings[len_str_two]))
         {
             len_str_one--; 
             len_str_two--;
         }
         else
-            return (tolower (str_one[len_str_one]) - tolower (str_two[len_str_two]));
+            return (tolower (data_str_one->strings[len_str_one]) - tolower (data_str_two->strings[len_str_two]));
     }
-    return (tolower (str_one[len_str_one]) - tolower (str_two[len_str_two]));
+    return (tolower (data_str_one->strings[len_str_one]) - tolower (data_str_two->strings[len_str_two]));
     
 }   
 
@@ -88,19 +88,21 @@ int MyStrcmpFromBack (const char * str_one, const char * str_two)
  * \param [in] quantity How long are strings
  */
 
-void BubbleSort (char ** text, int text_size)
+void BubbleSort (struct General * data)
 {
-    char * buffer = NULL;
+    Read_Text buffer = {};
 
-    for (int i = 0; i < text_size - 1; i++)                                             ///< -2 Because text[last_element] if \\0 
-        for (int j = 0; j < text_size - 1; j++)
+    for (int i = 0; i < data->inputed.n_elements - 1; i++)                                             ///< -2 Because text[last_element] if \\0 
+        for (int j = 0; j < data->inputed.n_elements - 1; j++)
         {
-            if (MyStrcmpFromBack (text[j], text[j + 1]) > 0)
+            if (data->stanzas[j].strings == '\0' || data->stanzas[j + 1].strings == '\0')
+                continue;
+            if (BackComparator (&data->stanzas[j], &data->stanzas[j + 1]) > 0)
             {
-                buffer = text[j];
+                buffer = data->stanzas[j];
 
-                text[j] = text[j + 1];
-                text[j + 1] = buffer;  
+                data->stanzas[j] = data->stanzas[j + 1];
+                data->stanzas[j + 1] = buffer;  
             }
         }
 }
