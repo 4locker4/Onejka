@@ -9,7 +9,7 @@ void Menu (int argc, char * argv[], struct General * data)
 
     else if (argc == 1)
     {
-        FileRunner (data, FILE_NAME);
+        FileRunner (data, "./OnejkaText.txt");
     }
     else
     {
@@ -74,12 +74,16 @@ int GetFlags (const int argc, const char* str)
 
 void FileRunner (struct General * data, const char * file_directory)
 {
+    COLOR_PRINT (GREEN, "FileRunner: starting FileOpener...\n");
     FileOpener (file_directory, data);
 
+    COLOR_PRINT (GREEN, "FileRunner: starting MakeAnArray...\n");
     MakeAnArray (data);
 
+    COLOR_PRINT (GREEN, "FileRunner: starting LineSplitting...\n");
     LineSplitting (data);
 
+    COLOR_PRINT (GREEN, "FileRunner: starting BubbleSort...\n");
     BubbleSort (data);
 
 }
@@ -120,7 +124,7 @@ void FileOpener (const char * file_directory, struct General * data)
 
 void MakeAnArray (struct General * data)
 {
-    data->stanzas = (Read_Text *) calloc (data->inputed.n_elements + 1, sizeof (char *));
+    data->stanzas = (Read_Text *) calloc (data->inputed.n_elements + 1, sizeof (Read_Text));
     my_assert (data->stanzas != NULL);
 }
 
@@ -142,14 +146,18 @@ void LineSplitting (struct General * data)
         text_index++;
     }
 
-while (data->inputed.text != '\0')
+    while (data->inputed.text != '\0')
     {
+        COLOR_PRINT (RED, "FUUUCK <%d>\n", i);
         if (data->inputed.text[i] != '\r' && data->inputed.text[i] != '\n')
             i++;
         else
         {
             data->inputed.text[i] = '\0';
-            data->stanzas[text_index].strings_len = strlen (data->stanzas[text_index].strings);
+            COLOR_PRINT (GREEN, "Now lets take strlen\n");
+
+            (data->stanzas[text_index]).strings_len = strlen (((data->stanzas[text_index]).strings));
+            COLOR_PRINT (GREEN, "We made it\n");
 
             i++;
 
@@ -188,7 +196,7 @@ void FileWithResult (struct General * data)
 
     for (size_t i = 0; i < data->inputed.str_len; i++)
     {
-        fwrite (data->stanzas[i].strings, data->stanzas[i].strings_len, data->stanzas->strings_len, result);
+        fwrite (data->stanzas[i].strings, data->stanzas[i].strings_len, data->stanzas[i].strings_len, result);
         fwrite (&next_str, 1, 1, result);
         i++;
     }

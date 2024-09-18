@@ -1,13 +1,13 @@
 #include "../inc/QuickSort.h"
 
-void MyQsort (void ** data, size_t size, size_t el_size, int (*Comparater) (void * a, void * b))
+void MyQsort (char ** data, size_t size, size_t el_size, int (*Comparater) (void * a, void * b))
 {
 
 /*  Pivot is last value of array  */
 
-    void * less   = data;
-    void * more   = data;
-    void * buffer = NULL;
+    char * less   = *data;
+    char * more   = *data;
+    char * buffer = NULL;
 
     int less_ind = 0;
     int more_ind = 0;
@@ -29,6 +29,9 @@ void MyQsort (void ** data, size_t size, size_t el_size, int (*Comparater) (void
             {
                 i += el_size;
             }
+            
+            *(more) = data[0] + i;
+            *(data + i) = more;
         }
         else
             i += el_size;
