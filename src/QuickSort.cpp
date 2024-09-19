@@ -1,40 +1,28 @@
-#include "../inc/QuickSort.h"
+// #include "../inc/QuickSort.h"
 
-void MyQsort (char ** data, size_t size, size_t el_size, int (*Comparater) (void * a, void * b))
-{
+// void MyQsort (char ** data, size_t size, size_t el_size, int (*Comparater) (void * a, void * b))
+// {
 
-/*  Pivot is last value of array  */
+// /*  Pivot is last value of array  */
+//     size_t more = 0;
+//     char * 
 
-    char * less   = *data;
-    char * more   = *data;
-    char * buffer = NULL;
+//     for (size_t i = 0; i < size; i += el_size)
+//     {
+//         while (Comparater (data + i, data + size - el_size) <= 0)                                           ///< While [element] < pivot
+            // i += el_size;                                                                                   ///< Going to next element
+//         more = i;       /// или инициализировать его до фора?                                                                                    ///< Addres of first string`s element, which > pivot
 
-    int less_ind = 0;
-    int more_ind = 0;
+//         while (Comparater (data + i, data + size - el_size) > 0)                                            ///< While every elements > pivot
+//             i += el_size;                                                                                   ///< Going to check next element
 
-    if (Comparater ((char *) data, (char *) data + (size - 1) * el_size) > 0)
-        {
-            more = (char *) data + (size - 1) * el_size;
-        }
+//         char * buffer = NULL;
 
-    size_t i = 0;
+//         buffer = *(data + i);
+//         *(data + i) = *(data + more);
+//         *(data + more) = *(data + i);
 
-    while (i < size)
-    {
-        if (Comparater ((char *) data + i, (char *) data + size - el_size) < 0)
-        {
-            more = (char *) data + i;
-            
-            while (Comparater ((char *) data + i, (char *) data + size - el_size) < 0)
-            {
-                i += el_size;
-            }
-            
-            *(more) = data[0] + i;
-            *(data + i) = more;
-        }
-        else
-            i += el_size;
+//         while ;
 
-    }
-}
+//     }
+// }

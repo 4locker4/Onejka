@@ -15,41 +15,29 @@
 #include "Utils.h"
 #include "Errors.h"
 #include "Compare.h"
-
-
-struct Text
-{
-    char *  text;                                                                           ///< String with file`s text
-    size_t  str_len;                                                                        ///< String`s lenght
-    int     n_elements;                                                                     ///< Quantity of elements
-}; 
  
-struct Read_Text 
+typedef struct 
 { 
-    char * strings;                                                                         ///< Array with pointers to strings
-    int    strings_len;                                                                     ///< Array with lenght of every string
-};
+    char * strings     = NULL;                                                              ///< Array with pointers to strings
+    int    strings_len = 0;                                                                 ///< Array with lenght of every string
+} Read_Text;
 
-struct General
-{
-    struct Text inputed;
-    Read_Text * stanzas;
-};
+typedef struct
+{ 
+    char *  text        = NULL;                                                             ///< String with file`s text
+    size_t  file_size   = 0;                                                                ///< String`s lenght
+    int     n_elements  = 0;                                                                ///< Quantity of elements                                                                   
+    Read_Text * stanzas = NULL;
+} General;
 
-enum UsersChoise
-{
-    ERROR = -1,                                                                             ///< If user enter something  wrong
-    PUT   = 'p',                                                                            ///< To put Your file                                                                       ///< To start tests
-    HELP  = 'h'                                                                             ///< To take help
-};
+const char * INPUT_FILE_NAME  = "./OnejkaText.txt";
+const char * OUTPUT_FILE_NAME = "../Onejka/Result.txt";
  
-void Menu           (int argc, char * argv[], struct General * data);                       ///< Start to work with file
-int  GetFlags       (const int argc, const char* str);                                      ///< Get flags from argv[] input
-void FileRunner     (struct General * data, const char * file_directory);                   ///< Read and sort file
-void FileOpener     (const char * file_directory, struct General * data);                   ///< Open file with text
-void MakeAnArray    (struct General * data);                                                ///< Puts ponters to strings in array
-void LineSplitting  (struct General * data);                                                ///< Return pointer to string
-void HelpList       ();                                                                     ///< Print instruction for user
-void FileWithResult (struct General * data);                                                ///< Write the result in file
+void   ProgrammRunner (General * data);                                                     ///< Read and sort file
+void   FileToStr      (General * data);                                                     ///< Open file with text
+size_t ReadFileSize   (const char * file_directory);                                        ///< Read size of file
+void   LineSplitting  (General * data);                                                     ///< Return pointer to string
+void   HelpList       ();                                                                   ///< Print instruction for user
+void   FileWithResult (General * data);                                                     ///< Write the result in file
 
 #endif ///FILERUNNER_H

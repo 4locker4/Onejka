@@ -70,14 +70,14 @@ bool SkipSpaces ()
 
 int StrCounter (char * fileFirstElement)                                             // Count quantity of tests
 {
-    int counterNextStr = 0;
+    int counterStr = 0;
     int i = 0;
 
     while (fileFirstElement[i] != '\0')
     {
         if (fileFirstElement[i] == '\n')
         {
-            counterNextStr++;
+            counterStr++;
             i++;
             while (fileFirstElement[i] == '\n')
             {
@@ -88,5 +88,5 @@ int StrCounter (char * fileFirstElement)                                        
         else
             i++;
     }
-    return counterNextStr;
+    return counterStr;
 }

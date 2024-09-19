@@ -2,13 +2,12 @@
 
 #include "../inc/FileRunner.h"
 
-int main (int argc, char * argv[])
+int main ()
 {
-    struct General data = {};
+    General data = {};
 
     COLOR_PRINT (GREEN, "main: Opening menu\n");
-
-    Menu (argc, argv, &data);
+    ProgrammRunner (&data);
 
     FileWithResult (&data);
 
