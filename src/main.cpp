@@ -1,15 +1,16 @@
 ///@file main.cpp
 
-#include "../inc/FileRunner.h"
+#include "../inc/Compare.h"
 
 int main ()
 {
-    General data = {};
+    General data {};                                            ///< Struct with all file datas
 
-    COLOR_PRINT (GREEN, "main: Opening menu\n");
-    ProgrammRunner (&data);
+    ProgrammRunner (&data);                                     ///< Read from file
 
-    FileWithResult (&data);
+    BubbleSort (&data, BackComparator);                         ///< Sort stanzas
+
+    FileWithResult (&data);                                     ///< Write sorted Onejka
 
     return 0;
 }

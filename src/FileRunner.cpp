@@ -2,6 +2,9 @@
 
 #include "../inc/FileRunner.h"
 
+const char * INPUT_FILE_NAME  = "./OnejkaText.txt";
+const char * OUTPUT_FILE_NAME = "./Onejka/Result.txt";
+
 /**
  * @brief Read and sort file
  * \param [in] data           Struct of all file data
@@ -10,12 +13,11 @@
 
 void ProgrammRunner (General * data)
 {
-    COLOR_PRINT (GREEN, "FileRunner: starting FileOpener...\n");
-    FileToStr (data);
-    COLOR_PRINT (GREEN, "FileRunner: starting LineSplitting...\n");
+    my_assert (data != NULL);
+
+    data->text = FileToStr (data);
+
     LineSplitting (data);
-    COLOR_PRINT (GREEN, "FileRunner: starting BubbleSort...\n");
-    BubbleSort (data, BackComparator);
 }
 
 /**
@@ -23,20 +25,26 @@ void ProgrammRunner (General * data)
  * \param [in] file_directory File name
  */
 
-void FileToStr (General * data)
+char * FileToStr (General * data)
 {
-    data->file_size = ReadFileSize (INPUT_FILE_NAME);
+    my_assert (data != NULL);
+
+    size_t file_size = ReadFileSize (INPUT_FILE_NAME);
 
     FILE* file_with_onejka = fopen (INPUT_FILE_NAME, "rb");
     my_assert (file_with_onejka != 0);
 
-    data->text = (char *) calloc (data->file_size + 1, sizeof (char));
-    my_assert (data->file_size != 0);
+    data->text = (char *) calloc (file_size + 1, sizeof (char));
+    my_assert (file_size != 0);
 
-    size_t check_size = (int) fread (data->text, sizeof (char), data->file_size, file_with_onejka);
-    my_assert (check_size == data->file_size);
+    char * pointer_to_text = NULL;
 
-    data->text[data->file_size] = '\0';
+    size_t check_size = (int) fread (pointer_to_text, sizeof (char), file_size, file_with_onejka);
+    my_assert (check_size == file_size);
+
+    pointer_to_text[file_size] = '\0';
+
+    return pointer_to_text;
 }
 
 size_t ReadFileSize (const char * file_directory)
@@ -44,7 +52,6 @@ size_t ReadFileSize (const char * file_directory)
     my_assert (file_directory != NULL);
 
     struct stat to_take_file_size = {};
-
     stat (file_directory, &to_take_file_size);
 
     return to_take_file_size.st_size;
@@ -59,53 +66,29 @@ size_t ReadFileSize (const char * file_directory)
 
 void LineSplitting (General * data)
 {
+    my_assert (data != NULL);
     int stanzas_n = 0;
+    int index = 0;
 
     data->n_elements = StrCounter (data->text);
 
     data->stanzas = (Read_Text *) calloc (data->n_elements, sizeof (Read_Text));
     my_assert (data->stanzas != NULL);
 
-    if (data->text[0] != '\r')
+    while (data->text[index] != '\0')
     {
-        (data->stanzas[stanzas_n]).strings = data->text;
-    }
-
-    while (data->text != '\0')
-    {
-        COLOR_PRINT (RED, "FUUUCK\n");
-        if (*data->text != '\r')
-            data->text++;
-        else
+        if (data->text[index] == '\r')
         {
-            *data->text= '\0';
-            COLOR_PRINT (GREEN, "Now lets take strlen\n");
+            data->text[index] = '\0';
 
-            (data->stanzas[stanzas_n]).strings_len = strlen (((data->stanzas[stanzas_n]).strings));
-            COLOR_PRINT (GREEN, "We made it\n");
-
+            data->stanzas[stanzas_n].strings = data->text + index;
             stanzas_n++;
-            data->text++;
 
-            if (*data->text != '\r')
-            {
-                data->stanzas[stanzas_n].strings = data->text;
-
-                stanzas_n++;
-                data->text += 2;
-            }
+            index++;
         }
+
+        index++;
     }
-}
-
-/**
- * @brief Info for User
- */
-
-void HelpList ()
-{
-    printf ("If You need to open Your own file, write like this:\n\n");
-    printf ("[Name of .exe file] --put [Your file with text name]\n");
 }
 
 /**
@@ -118,17 +101,21 @@ void FileWithResult (General * data)
     FILE * result = fopen (OUTPUT_FILE_NAME, "w");
     my_assert (fopen != NULL);
 
-    char next_str = '\n';
-
     for (size_t i = 0; i < data->file_size; i++)
     {
         fwrite (data->stanzas[i].strings, data->stanzas[i].strings_len, data->stanzas[i].strings_len, result);
-        fwrite (&next_str, 1, 1, result);
+        fwrite ("\n", 1, 1, result);
         i++;
     }
+    MemCleaner (data);
+
+    my_assert (!fclose (result));
+}
+
+void MemCleaner (General * data)
+{
     free (data->text);
     free (data->stanzas);
 
-    int end = fclose (result);
-    my_assert (end == 0);
+    General data {};
 }

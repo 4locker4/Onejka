@@ -9,9 +9,9 @@
 #include "Errors.h"
 #include "FileRunner.h"
 
-int  ForwardComparator   (Read_Text * data_first_str, Read_Text * data_second);                           ///< Compare two strings
-int  BackComparator      (void * data_str_one,   void * data_str_two);                                    ///< Compare two stringsfrom behind
-void BubbleSort          (General * data, int (*Comparator)(void *, void *));                             ///< Runs bubble sort 
+int  ForwardComparator   (void * data_first_str, void * data_second);                                               ///< Compare two strings
+int  BackComparator      (void * data_str_one,   void * data_str_two);                                              ///< Compare two stringsfrom behind
+void BubbleSort          (General * data, int (*Comparator)(void * first_str, void * second_str));                  ///< Runs bubble sort 
                                                      
 
 #endif ///COMPARE_H
