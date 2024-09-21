@@ -29,8 +29,8 @@ typedef struct
     Read_Text * stanzas     = NULL;
 } General;
  
-void   ProgrammRunner (General * data);                                                     ///< Read and sort file
-char * FileToStr      (General * data);                                                     ///< Open file with text
+void   FileReader     (General * data);                                                     ///< Read and sort file
+char * FileToStr      (const char * file_directory);                                        ///< Open file with text
 size_t ReadFileSize   (const char * file_directory);                                        ///< Read size of file
 void   LineSplitting  (General * data);                                                     ///< Return pointer to string
 void   FileWithResult (General * data);                                                     ///< Write the result in file

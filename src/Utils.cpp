@@ -71,22 +71,21 @@ bool SkipSpaces ()
 int StrCounter (char * fileFirstElement)                                             // Count quantity of tests
 {
     int counterStr = 0;
-    int i = 0;
 
-    while (fileFirstElement[i] != '\0')
+    while (*fileFirstElement != '\0')
     {
-        if (fileFirstElement[i] == '\n')
+        if (*fileFirstElement == '\n')
         {
             counterStr++;
-            i++;
-            while (fileFirstElement[i] == '\n')
+            fileFirstElement++;
+            while (*fileFirstElement == '\n')
             {
-                i++;
+                fileFirstElement++;
                 continue;
             }
         }
         else
-            i++;
+            fileFirstElement++;
     }
-    return counterStr;
+    return counterStr + 1;
 }

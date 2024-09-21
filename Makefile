@@ -17,7 +17,7 @@ objects = $(sources:.cpp=.o)
 
 execute = Onejka.exe
 
-all: $(sources) $(execute)
+all: $(sources) $(execute) run
 
 run:
 	@$(execute)

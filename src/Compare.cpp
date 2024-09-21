@@ -75,7 +75,8 @@ int BackComparator (void * first_str, void * second_str)
         else
             break;
     }
-    return (data_first_str->strings[len_str_one] - data_second_str->strings[len_str_two]);
+    return (data_first_str ->strings[len_str_one] - 
+            data_second_str->strings[len_str_two]);
 }   
 
 /**

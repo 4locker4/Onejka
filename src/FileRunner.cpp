@@ -11,11 +11,12 @@ const char * OUTPUT_FILE_NAME = "./Onejka/Result.txt";
  * \param [in] file_directory File`s directory
  */
 
-void ProgrammRunner (General * data)
+void FileReader (General * data)
 {
     my_assert (data != NULL);
-
-    data->text = FileToStr (data);
+    COLOR_PRINT (GREEN, "FileReader: open FileToStr\n");
+    data->text = FileToStr (INPUT_FILE_NAME);
+    COLOR_PRINT (GREEN, "FileReader: Now let`s spliiiiiiiit\n");
 
     LineSplitting (data);
 }
@@ -25,19 +26,22 @@ void ProgrammRunner (General * data)
  * \param [in] file_directory File name
  */
 
-char * FileToStr (General * data)
+char * FileToStr (const char * file_directory)                          
 {
-    my_assert (data != NULL);
+    my_assert (file_directory != NULL);
+
 
     size_t file_size = ReadFileSize (INPUT_FILE_NAME);
+
+    COLOR_PRINT (GREEN, "%d\n", file_size);
 
     FILE* file_with_onejka = fopen (INPUT_FILE_NAME, "rb");
     my_assert (file_with_onejka != 0);
 
-    data->text = (char *) calloc (file_size + 1, sizeof (char));
-    my_assert (file_size != 0);
-
     char * pointer_to_text = NULL;
+
+    pointer_to_text = (char *) calloc (file_size + 1, sizeof (char));
+    my_assert (file_size != 0);
 
     size_t check_size = (int) fread (pointer_to_text, sizeof (char), file_size, file_with_onejka);
     my_assert (check_size == file_size);
@@ -52,7 +56,8 @@ size_t ReadFileSize (const char * file_directory)
     my_assert (file_directory != NULL);
 
     struct stat to_take_file_size = {};
-    stat (file_directory, &to_take_file_size);
+    stat (file_directory, &to_take_file_size); //Check stat 
+    my_assert (to_take_file_size.st_size != NULL);
 
     return to_take_file_size.st_size;
 }
@@ -72,6 +77,8 @@ void LineSplitting (General * data)
 
     data->n_elements = StrCounter (data->text);
 
+    COLOR_PRINT (GREEN, "We got n_elements <%d>\n", data->n_elements);
+
     data->stanzas = (Read_Text *) calloc (data->n_elements, sizeof (Read_Text));
     my_assert (data->stanzas != NULL);
 
@@ -79,15 +86,19 @@ void LineSplitting (General * data)
     {
         if (data->text[index] == '\r')
         {
+            COLOR_PRINT (RED, "HELPHELPHELP\n");
             data->text[index] = '\0';
 
-            data->stanzas[stanzas_n].strings = data->text + index;
+            data->stanzas[stanzas_n].strings = &data->text[index];
             stanzas_n++;
-
+            COLOR_PRINT (RED, "%d - n_stanza\n", stanzas_n);
             index++;
+            COLOR_PRINT (RED, "%s\n", data->stanzas[stanzas_n - 1]);
+
         }
 
         index++;
+
     }
 }
 
@@ -100,7 +111,7 @@ void FileWithResult (General * data)
 {
     FILE * result = fopen (OUTPUT_FILE_NAME, "w");
     my_assert (fopen != NULL);
-
+    COLOR_PRINT (RED, "%s \n%d", data->stanzas[200].strings, data->stanzas[200].strings_len);
     for (size_t i = 0; i < data->file_size; i++)
     {
         fwrite (data->stanzas[i].strings, data->stanzas[i].strings_len, data->stanzas[i].strings_len, result);
@@ -109,7 +120,7 @@ void FileWithResult (General * data)
     }
     MemCleaner (data);
 
-    my_assert (!fclose (result));
+    my_assert (fclose (result));
 }
 
 void MemCleaner (General * data)
@@ -117,5 +128,5 @@ void MemCleaner (General * data)
     free (data->text);
     free (data->stanzas);
 
-    General data {};
+    //General data {};
 }
