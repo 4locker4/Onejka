@@ -36,4 +36,4 @@ void   LineSplitting  (General * data);                                         
 void   FileWithResult (General * data);                                                     ///< Write the result in file
 void   MemCleaner     (General * data);                                                     ///< Clean all dynamic memory
 
-#endif ///FILERUNNER_H
+#endif ///not FILERUNNER_H

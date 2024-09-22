@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <limits.h>
+#include <stdint.h>
 
 #define RESET   "\x1b[0m"
 #define RED     "\x1b[31m"
@@ -13,11 +15,15 @@
 
 extern int counter_iterations = 0;
 
-void MyQsort           (int data[], size_t size, size_t el_size, int (*Comparater) (void * a, void * b));
+void Swap64 (void * obj_one, void * obj_two, int bias);
+void Swap32 (void * obj_one, void * obj_two, int bias);
+void Swap16 (void * obj_one, void * obj_two, int bias);
+void Swap8  (void * obj_one, void * obj_two, int bias);
+
+void MyQsort (void * data, size_t size, size_t el_size, int (*Compare) (void * first_obj, void * second_obj));
 int ForwardComparator  (void * first_str, void * second_str);
-int IntComparater (void * a, void * b);
-
-
+int IntComparater      (void * a, void * b);
+void Swapper (void * obj_one, void * obj_two, size_t el_size);
 
 int main ()
 {
@@ -38,67 +44,139 @@ int main ()
         123, 122, 2435, 6, 0, 2, 0
     };
     
-    MyQsort (dota2, sizeof (dota2), sizeof (*dota2), IntComparater);
+    MyQsort ((void *) dota2, sizeof (dota2), sizeof (*dota2), IntComparater);
     for (int i = 0; i < 7; i++)
         printf ("%d ", dota2[i]);
     printf("\n");
+
     return 0;
 }
 
-void MyQsort (void ** data, size_t size, size_t el_size, int (*Compare) (void * first_obj, void * second_obj))
+void MyQsort (void * data, size_t size, size_t el_size, int (*Compare) (void * first_obj, void * second_obj))
 {
-    int n_elements = size / el_size;
+    int n_elements = size / el_size;                                                                                // n_elements здесь требуется, так как целочисленное деление играет роль
     int more = n_elements * el_size - el_size;
     int less = 0;
     int pivot = (n_elements / 2) * el_size;
     counter_iterations++;
     COLOR_PRINT (STRANGE, "%d\n", counter_iterations);
-    COLOR_PRINT (GREEN, "n_elements: %d, more: %d\nless: %d, n_pivot: %d\n", n_elements, more, less, pivot);
-    COLOR_PRINT (YELLOW, "pivot: %d\n", data[pivot]);
+    COLOR_PRINT (GREEN, "n_elements: %d, more: %d\nless: %d, n_pivot: %d\n", n_elements, more / el_size, less / el_size, pivot / el_size);
+    COLOR_PRINT (YELLOW, "pivot: %d\n", *((int *) ((char *) data + pivot)));
 
     do
     {
-        while (Compare (*data + less, *data + pivot) < 0) less += el_size;                     ///< Less than PIVOT
-        COLOR_PRINT (GREEN, "n_more: %d\n", less);
+        while (Compare ((char *) data + less, (char *) data + pivot) < 0) less += el_size;                     ///< Less than PIVOT
+        COLOR_PRINT (GREEN, "n_more: %d\n", less / el_size);
 
-        while (Compare (*data + more, *data + pivot) > 0) more -= el_size;                     ///< More than PIVOT
-        COLOR_PRINT (GREEN, "n_less: %d\n", more);
+        while (Compare ((char *) data + more, (char *) data + pivot) > 0) more -= el_size;                     ///< More than PIVOT
+        COLOR_PRINT (GREEN, "n_less: %d\n", more / el_size);
 
         for (int i = 0; i < n_elements; i++)
         {
-            COLOR_PRINT (RED, "%d ", data[i]);
+            COLOR_PRINT (RED, "%d ", *((int *) ((char *) data + i * el_size)));
         }
         printf ("\n");
 
-        void * buffer = *data + less;
-        printf ("data[more]: %d, data[less]: %d\n", data[less], data[more]);
+        void * buffer = (char *) data + less;
+        printf ("data[more]: %d, data[less]: %d\n", (int *) ((char *) data + less), (int *) ((char *) data + more));
 
-        data[less] = data[more];
-        data[more] = buffer;
+        Swapper ((char *) data + less, (char *) data + more, el_size);
 
         for (int i = 0; i < n_elements; i++)
         {
-            COLOR_PRINT (RED, "%d ", data[i]);
+            COLOR_PRINT (RED, "%d ", *((int *) ((char *) data + i * el_size)));
         }
-        printf ("\n\n");
+        printf ("\n");
 
-        less++;
-        more--;
+        less += el_size;
+        more -= el_size;
     } while (less < more);
     
-    if (size / el_size - (pivot - 1) > 2 && (pivot + 1) > 2)
+    if ((size + el_size - pivot)  / el_size > 2 && (pivot + el_size) / el_size > 2)
     {
         COLOR_PRINT (RED, "pivot: %d, pivot * el_size: %d\nsize - pivot * el_size: %d\nsize: %d\n", pivot, pivot * el_size, size - el_size * pivot, size);
-        MyQsort (data, (pivot + 1) * el_size, el_size, Compare);
-        MyQsort (&data[pivot - 1], size - (pivot - 1) * el_size, el_size, Compare);
+        MyQsort (data, pivot + el_size, el_size, Compare);
+        MyQsort ((char *) data + pivot - el_size, size - pivot + el_size, el_size, Compare);
     }
 }
 
 void Swapper (void * obj_one, void * obj_two, size_t el_size)
 {
+    printf ("data[more]: %d, data[less]: %d\n", (int *) (obj_one), (int *) (obj_two));
 
+    int bais = 0;
+
+    while (el_size > (bais + 1) * sizeof (uint64_t))
+    {
+        Swap64 (obj_one, obj_two, bais);
+        bais++;
+    }
+    bais *= 2;
+
+    if (el_size > (bais + 1) * sizeof (uint32_t))
+    {
+        Swap32 (obj_one, obj_two, bais);
+        bais++;
+    }
+    bais *= 2;
+
+    if (el_size > (bais + 1) * sizeof (uint16_t))
+    {
+        Swap16 (obj_one, obj_two, bais);
+        bais++;
+    }
+    bais *= 2;    
+
+    if (el_size > (bais + 1) * sizeof (uint8_t))
+    {
+        Swap8 (obj_one, obj_two, bais);
+        bais++;
+    }
 }
 
+void Swap64 (void * obj_one, void * obj_two, int bias)
+{
+    size_t size = sizeof (uint64_t);
+
+    uint64_t buffer = 0;
+
+    memcpy (&buffer, ((char *) obj_one + bias * size), size);
+    memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
+    memcpy (((char *) obj_two + bias * size), &buffer, size);
+}
+
+void Swap32 (void * obj_one, void * obj_two, int bias)
+{
+    size_t size = sizeof (uint32_t);
+
+    uint32_t buffer = 0;
+
+    memcpy (&buffer, ((char *) obj_one + bias * size), size);
+    memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
+    memcpy (((char *) obj_two + bias * size), &buffer, size);
+}
+
+void Swap16 (void * obj_one, void * obj_two, int bias)
+{
+    size_t size = sizeof (uint16_t);
+
+    uint16_t buffer = 0;
+
+    memcpy (&buffer, ((char *) obj_one + bias * size), size);
+    memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
+    memcpy (((char *) obj_two + bias * size), &buffer, size);
+}
+
+void Swap8 (void * obj_one, void * obj_two, int bias)
+{
+    size_t size = sizeof (uint8_t);
+
+    uint8_t buffer = 0;
+
+    memcpy (&buffer, ((char *) obj_one + bias * size), size);
+    memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
+    memcpy (((char *) obj_two + bias * size), &buffer, size);
+}
 
 int IntComparater (void * a, void * b)
 {

@@ -14,4 +14,4 @@ int  BackComparator      (void * data_str_one,   void * data_str_two);          
 void BubbleSort          (General * data, int (*Comparator)(void * first_str, void * second_str));                  ///< Runs bubble sort 
                                                      
 
-#endif ///COMPARE_H
+#endif ///not COMPARE_H

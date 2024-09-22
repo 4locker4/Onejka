@@ -27,4 +27,4 @@ void FileOpener         (int argc, char * argv[]);                              
 int  StrCounter         (char * fileFirstElement);                                  ///< Count quantity of tests
 void TestArrayReturner  (int fileSize, char * fileFirstElement);                    ///< Put values into array of struct (test data array)
 
-#endif ///UTILS_H
+#endif ///not UTILS_H
