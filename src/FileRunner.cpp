@@ -98,7 +98,6 @@ void LineSplitting (General * data)
         }
 
         index++;
-
     }
 }
 

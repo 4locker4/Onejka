@@ -1,50 +1,26 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <limits.h>
-#include <stdint.h>
-
-#define RESET   "\x1b[0m"
-#define RED     "\x1b[31m"
-#define GREEN   "\x1b[32m"
-#define YELLOW  "\x1b[33m"
-#define STRANGE "\x1b[1;35;7m"
-
-#define COLOR_PRINT(color, ...)  { printf (color __VA_ARGS__); printf (RESET); }    ///< Colorful print
-
-extern int counter_iterations = 0;
-
-void Swap64 (void * obj_one, void * obj_two, int bias);
-void Swap32 (void * obj_one, void * obj_two, int bias);
-void Swap16 (void * obj_one, void * obj_two, int bias);
-void Swap8  (void * obj_one, void * obj_two, int bias);
-
-void MyQsort (void * data, size_t size, size_t el_size, int (*Compare) (void * first_obj, void * second_obj));
-int ForwardComparator  (void * first_str, void * second_str);
-int IntComparater      (void * a, void * b);
-void Swapper (void * obj_one, void * obj_two, size_t el_size);
+#include "../inc/QuickSort.h"
 
 int main ()
 {
-    // char * a = "a";
-    // char * b = "b";
-    // char * c = "c";
-    // char * d = "d";
-    // char * e = "e";
-    // char * f = "f";
+    char * a = "a";
+    char * b = "b";
+    char * c = "c";
+    char * d = "d";
+    char * e = "e";
+    char * f = "f";
+    char * g = "g";
     
-    int dotpa2[7] = 
-    {
-        1, -1, 1, -1, 1, -1, 1
-    };
-
     int dota2[7] = 
     {
-        123, 122, 2435, 6, 0, 2, 0
+        -123, 122, 2435, 6, 0, 2, 0
+    };
+
+    char * dota2q[7] = 
+    {
+        e, g, a, c, d, b, f
     };
     
-    MyQsort ((void *) dota2, sizeof (dota2), sizeof (*dota2), IntComparater);
+    MyQsort ((void *) dota2, sizeof (dota2), sizeof (*dota2), ForwardComparator);
     for (int i = 0; i < 7; i++)
         printf ("%d ", dota2[i]);
     printf("\n");
@@ -80,7 +56,7 @@ void MyQsort (void * data, size_t size, size_t el_size, int (*Compare) (void * f
         void * buffer = (char *) data + less;
         printf ("data[more]: %d, data[less]: %d\n", (int *) ((char *) data + less), (int *) ((char *) data + more));
 
-        Swapper ((char *) data + less, (char *) data + more, el_size);
+        Swapper ((void *) Read_Text str_one, (void *) Read_text str_two);
 
         for (int i = 0; i < n_elements; i++)
         {
@@ -100,82 +76,89 @@ void MyQsort (void * data, size_t size, size_t el_size, int (*Compare) (void * f
     }
 }
 
-void Swapper (void * obj_one, void * obj_two, size_t el_size)
+void Swapper (void * obj_one, void * obj_two)
 {
-    printf ("data[more]: %d, data[less]: %d\n", (int *) (obj_one), (int *) (obj_two));
-
-    int bais = 0;
-
-    while (el_size > (bais + 1) * sizeof (uint64_t))
-    {
-        Swap64 (obj_one, obj_two, bais);
-        bais++;
-    }
-    bais *= 2;
-
-    if (el_size > (bais + 1) * sizeof (uint32_t))
-    {
-        Swap32 (obj_one, obj_two, bais);
-        bais++;
-    }
-    bais *= 2;
-
-    if (el_size > (bais + 1) * sizeof (uint16_t))
-    {
-        Swap16 (obj_one, obj_two, bais);
-        bais++;
-    }
-    bais *= 2;    
-
-    if (el_size > (bais + 1) * sizeof (uint8_t))
-    {
-        Swap8 (obj_one, obj_two, bais);
-        bais++;
-    }
+    
 }
 
 void Swap64 (void * obj_one, void * obj_two, int bias)
 {
-    size_t size = sizeof (uint64_t);
+    my_assert (obj_one != NULL);
+    my_assert (obj_two != NULL);
 
-    uint64_t buffer = 0;
+    size_t size = sizeof (int64_t);
+
+    int64_t buffer = 0;
+
+    COLOR_PRINT (RED, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n", &buffer, &obj_one, &obj_two);
 
     memcpy (&buffer, ((char *) obj_one + bias * size), size);
     memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
     memcpy (((char *) obj_two + bias * size), &buffer, size);
+
+    COLOR_PRINT (GREEN, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n\n", &buffer, &obj_one, &obj_two);
 }
 
 void Swap32 (void * obj_one, void * obj_two, int bias)
 {
-    size_t size = sizeof (uint32_t);
+    my_assert (obj_one != NULL);
+    my_assert (obj_two != NULL);
 
-    uint32_t buffer = 0;
+    size_t size = sizeof (int32_t);
+
+    int32_t buffer = 0;
+    
+    COLOR_PRINT (RED, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n", &buffer, &obj_one, &obj_two);
 
     memcpy (&buffer, ((char *) obj_one + bias * size), size);
     memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
     memcpy (((char *) obj_two + bias * size), &buffer, size);
+
+    COLOR_PRINT (GREEN, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n\n", &buffer, &obj_one, &obj_two);
 }
 
 void Swap16 (void * obj_one, void * obj_two, int bias)
 {
-    size_t size = sizeof (uint16_t);
+    my_assert (obj_one != NULL);
+    my_assert (obj_two != NULL);
 
-    uint16_t buffer = 0;
+    size_t size = sizeof (int16_t) * 8;
+
+    printf ("%d - size\n", size);
+
+    int16_t buffer = 0;
+
+    COLOR_PRINT (RED, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n", &buffer, &obj_one, &obj_two);
+    
+    COLOR_PRINT (YELLOW, "\nobj_one - <%d>\nobj_two - <%d>", obj_one, obj_two);
+    COLOR_PRINT (YELLOW, "\nbeffer - <%d>\n", buffer);
 
     memcpy (&buffer, ((char *) obj_one + bias * size), size);
     memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
     memcpy (((char *) obj_two + bias * size), &buffer, size);
+
+    COLOR_PRINT (YELLOW, "\nobj_one - <%d>\nobj_two - <%d>", obj_one, obj_two);
+    COLOR_PRINT (YELLOW, "\nbeffer - <%d>\n", buffer);
+    
+    COLOR_PRINT (GREEN, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n\n", &buffer, &obj_one, &obj_two);
 }
 
 void Swap8 (void * obj_one, void * obj_two, int bias)
 {
-    size_t size = sizeof (uint8_t);
+    my_assert (obj_one != NULL);
+    my_assert (obj_two != NULL);
 
-    uint8_t buffer = 0;
+    size_t size = sizeof (int8_t);
 
+    int8_t buffer = 0;
+
+    COLOR_PRINT (RED, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n", &buffer, &obj_one, &obj_two);
+    
     memcpy (&buffer, ((char *) obj_one + bias * size), size);
     memcpy (((char *) obj_one + bias * size), ((char *) obj_two + bias * size), size);
     memcpy (((char *) obj_two + bias * size), &buffer, size);
+    
+    COLOR_PRINT (GREEN, "<%p> - buffer\n<%p> - obj_one\n<%p> - obj_two\n\n", &buffer, &obj_one, &obj_two);
 }
 
 int IntComparater (void * a, void * b)
